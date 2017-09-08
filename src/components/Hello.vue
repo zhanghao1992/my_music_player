@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-
+    <i class="iconfont icon-bofangqi_shengyin"></i>
   </div>
 </template>
 

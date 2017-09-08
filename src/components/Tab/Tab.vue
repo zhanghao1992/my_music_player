@@ -1,0 +1,57 @@
+<template>
+  <div class="">
+    <el-row class="tab">
+      <router-link tag="div" :to="{ path: '/recomend' }" active-class="tab-item-active">
+        <el-col :span="6">
+          <div class="tab-item">sd</div>
+        </el-col>
+      </router-link>
+
+      <router-link tag="div" :to="{ path: '/singer' }" active-class="tab-item-active">
+        <el-col :span="6">
+          <div class="tab-item">sd</div>
+        </el-col>
+      </router-link>
+      <router-link tag="div" :to="{ path: '/rank' }" active-class="tab-item-active">
+        <el-col :span="6">
+          <div class="tab-item">sd</div>
+        </el-col>
+      </router-link>
+      <router-link tag="div" :to="{ path: '/search' }" active-class="tab-item-active">
+        <el-col :span="6">
+          <div class="tab-item">sd</div>
+        </el-col>
+      </router-link>
+    </el-row>
+  </div>
+</template>
+
+<script type="text/ecmascript-6">
+export default {
+  name: '',
+  data () {
+    return {}
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="less">
+@r: 20rem;
+.tab {
+  .tab-item {
+    text-align: center;
+    color: #fff;
+    line-height: 40/@r;
+    height: 40/@r;
+    font-size: 24/@r;
+    margin: 10/@r 46/@r;
+  }
+  .tab-item-active {
+    .tab-item {
+      color: #f2df09;
+      border-bottom: 1/@r solid #f2df09;
+    }
+  }
+}
+</style>
