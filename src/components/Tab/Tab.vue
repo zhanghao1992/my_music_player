@@ -3,23 +3,23 @@
     <el-row class="tab">
       <router-link tag="div" :to="{ path: '/recomend' }" active-class="tab-item-active">
         <el-col :span="6">
-          <div class="tab-item">sd</div>
+          <div class="tab-item">推荐</div>
         </el-col>
       </router-link>
 
       <router-link tag="div" :to="{ path: '/singer' }" active-class="tab-item-active">
         <el-col :span="6">
-          <div class="tab-item">sd</div>
+          <div class="tab-item">歌手</div>
         </el-col>
       </router-link>
       <router-link tag="div" :to="{ path: '/rank' }" active-class="tab-item-active">
         <el-col :span="6">
-          <div class="tab-item">sd</div>
+          <div class="tab-item">排行</div>
         </el-col>
       </router-link>
       <router-link tag="div" :to="{ path: '/search' }" active-class="tab-item-active">
         <el-col :span="6">
-          <div class="tab-item">sd</div>
+          <div class="tab-item">搜索</div>
         </el-col>
       </router-link>
     </el-row>

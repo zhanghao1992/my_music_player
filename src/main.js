@@ -3,6 +3,9 @@
 import Vue from 'vue'
 import 'element-ui/lib/theme-default/index.css'
 import Element from 'element-ui'
+import VueJsonp from 'vue-jsonp'
+// import Mint from 'mint-ui'
+// import 'mint-ui/lib/style.css'
 import axios from 'axios'
 import Vuex from 'vuex'
 import Fastclick from 'fastclick'
@@ -11,9 +14,11 @@ import router from './router'
 
 Fastclick.attach(document.body)
 Vue.config.productionTip = false
+// Vue.use(Mint)
 Vue.use(Element)
 Vue.prototype.$http = axios
 Vue.use(Vuex)
+Vue.use(VueJsonp)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
