@@ -27,10 +27,16 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { Tab, TabItem } from 'vux'
+
 export default {
   name: '',
   data () {
     return {}
+  },
+  components: {
+    Tab,
+    TabItem
   }
 }
 </script>
