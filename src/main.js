@@ -14,6 +14,7 @@ Fastclick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(Element)
 Vue.prototype.$http = axios
+// Vue.prototype.$jsonp = VueJsonp
 Vue.use(Vuex)
 Vue.use(VueJsonp)
 

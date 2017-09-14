@@ -31,6 +31,10 @@ module.exports = {
     proxyTable: {
       '/qq_music_api': {
         target: 'https://c.y.qq.com/',
+        headers: {
+          referer: 'https://y.qq.com/portal/playlist.html',
+          host: 'c.y.qq.com'
+        },
         changeOrigin: true,
         pathRewrite: {
           '^/qq_music_api': '/'
