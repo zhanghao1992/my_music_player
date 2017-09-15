@@ -7,6 +7,7 @@ import VueJsonp from 'vue-jsonp'
 import axios from 'axios'
 import Vuex from 'vuex'
 import Fastclick from 'fastclick'
+import VueLazyLoad from 'vue-lazyload'
 import App from './App'
 import router from './router'
 
@@ -17,6 +18,9 @@ Vue.prototype.$http = axios
 // Vue.prototype.$jsonp = VueJsonp
 Vue.use(Vuex)
 Vue.use(VueJsonp)
+Vue.use(VueLazyLoad, {
+  loading: require('@/common/images/default.png')
+})
 
 /* eslint-disable no-new */
 new Vue({
