@@ -1,12 +1,17 @@
 <template>
-  <div class="singer" ref="singerWrapper" :data="singers">
-    <list-view :data="singers"></list-view>
+  <div>
+    <div class="singer" ref="singerWrapper" :data="singers">
+      <list-view :data="singers" @to-detail="toDetail"></list-view>
+    </div>
+    <router-view></router-view>
+    <loading v-show="!singers.length"></loading>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import ListView from '@/components/base/ListView/ListView'
 import Singer from '@/common/js/singer'
+import { Loading } from 'vux'
 
 export default {
   data () {
@@ -15,10 +20,13 @@ export default {
     }
   },
   created () {
-    this._getSingersList()
+    setTimeout(() => {
+      this._getSingersList()
+    }, 2000)
   },
   components: {
-    ListView
+    ListView,
+    Loading
   },
   methods: {
     _getSingersList () {
@@ -41,7 +49,7 @@ export default {
         if (jsonp.code === 0) {
           this.singers = this._normalizeSinger(jsonp.data.list)
         }
-        console.log(this._normalizeSinger(jsonp.data.list))
+//        console.log(this._normalizeSinger(jsonp.data.list))
       }).catch(err => {
         console.log(err)
       })
@@ -80,6 +88,10 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0)
       })
       return hot.concat(res)
+    },
+    toDetail (singer) {
+      console.log(0)
+      this.$router.push({path: `/singer/${singer.id}`})
     }
   }
 }

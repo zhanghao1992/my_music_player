@@ -46,6 +46,13 @@ export default {
           probeType: this.probeType
         })
       }
+
+      if (this.probeType === 2 || this.probeType === 3) {
+        var _this = this
+        this.Scroll.on('scroll', function (pos) {
+          _this.$emit('on-scroll', pos)
+        })
+      }
     },
     refresh () {
       this.Scroll && this.Scroll.refresh()
@@ -58,6 +65,9 @@ export default {
     },
     scrollToElement (el, time) {
       this.Scroll && this.Scroll.scrollToElement(el, time)
+    },
+    scrollTo (x, y, time) {
+      this.Scroll && this.Scroll.scrollTo(x, y, time)
     }
   }
 }
