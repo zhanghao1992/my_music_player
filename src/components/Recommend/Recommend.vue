@@ -22,7 +22,7 @@
         </ul>
       </div>
     </div>
-    <loading v-show="!discList.length"></loading>
+    <loading :show="!discList.length"></loading>
   </scroll>
 </template>
 

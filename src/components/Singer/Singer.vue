@@ -2,9 +2,9 @@
   <div>
     <div class="singer" ref="singerWrapper" :data="singers">
       <list-view :data="singers" @to-detail="toDetail"></list-view>
+      <loading :show="!singers.length"></loading>
     </div>
     <router-view></router-view>
-    <loading v-show="!singers.length"></loading>
   </div>
 </template>
 
@@ -12,6 +12,7 @@
 import ListView from '@/components/base/ListView/ListView'
 import Singer from '@/common/js/singer'
 import { Loading } from 'vux'
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -90,9 +91,12 @@ export default {
       return hot.concat(res)
     },
     toDetail (singer) {
-      console.log(0)
       this.$router.push({path: `/singer/${singer.id}`})
-    }
+      this.setSinger(singer)
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   }
 }
 </script>
