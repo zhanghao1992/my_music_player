@@ -53,7 +53,6 @@ export default {
           this.songsList = jsonp.data.list
         }
         console.log(this._normallizeSongs(jsonp.data.list))
-//        console.log(this.songsList)
       }).catch(err => {
         console.log(err)
       })
