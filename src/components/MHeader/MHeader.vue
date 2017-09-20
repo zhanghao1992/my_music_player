@@ -23,7 +23,7 @@ export default {
   display: flex;
   justify-content: center;
   padding: 28/@r 0;
-  background: #1F2D3D;
+  background: #083d65;
   font-size: 0;
   .logo {
     width: 50/@r;

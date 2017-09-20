@@ -27,15 +27,15 @@ export default {
     return {}
   },
   mounted () {
-    setTimeout(() => {
+    this.$nextTick(() => {
       this._initScroll()
-    }, 20)
+    })
   },
   watch: {
     data () {
-      setTimeout(() => {
-        this.refresh()
-      }, 20)
+      this.$nextTick(() => {
+        this.Scroll.refresh()
+      })
     }
   },
   methods: {

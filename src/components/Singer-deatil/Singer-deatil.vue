@@ -1,13 +1,13 @@
 <template>
   <transition name="slide">
-    <div class="SingerDetail">
-    </div>
+    <music-list :title="title" :songs-list="songsList" :bg-img="bgImg"></music-list>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
 import { mapGetters } from 'vuex'
 import { createSong } from '@/common/js/song'
+import MusicList from '@/components/MusicList/MusicList'
 
 export default {
   name: '',
@@ -17,9 +17,18 @@ export default {
     }
   },
   computed: {
+    title () {
+      return this.singer.name
+    },
+    bgImg () {
+      return this.singer.avatar
+    },
     ...mapGetters([
       'singer'
     ])
+  },
+  components: {
+    MusicList
   },
   created () {
 //    console.log(this.singer)
@@ -48,9 +57,8 @@ export default {
         num: 100,
         songstatus: 1
       }).then(jsonp => {
-        console.log(jsonp)
         if (jsonp.code === 0) {
-          this.songsList = jsonp.data.list
+          this.songsList = this._normallizeSongs(jsonp.data.list)
         }
         console.log(this._normallizeSongs(jsonp.data.list))
       }).catch(err => {
@@ -73,15 +81,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-.SingerDetail {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: #ccc;
-  z-index: 100;
-}
 .slide-enter-active, .slide-leave-active {
   transition: .3s;
 }
