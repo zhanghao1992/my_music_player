@@ -5,12 +5,15 @@
     <tab></tab>
 
     <router-view></router-view>
+
+    <player></player>
   </div>
 </template>
 
 <script>
 import MHeader from '@/components/MHeader/MHeader'
 import Tab from '@/components/Tab/Tab'
+import Player from '@/components/Player/Player'
 
 export default {
   name: 'app',
@@ -21,7 +24,8 @@ export default {
   },
   components: {
     MHeader,
-    Tab
+    Tab,
+    Player
   },
   methods: {
     handleClick (tab, event) {

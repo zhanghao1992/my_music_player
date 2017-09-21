@@ -23,9 +23,7 @@ export default {
     bgImg () {
       return this.singer.avatar
     },
-    ...mapGetters([
-      'singer'
-    ])
+    ...mapGetters(['singer'])
   },
   components: {
     MusicList

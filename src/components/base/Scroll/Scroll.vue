@@ -45,13 +45,12 @@ export default {
           click: this.click,
           probeType: this.probeType
         })
-      }
-
-      if (this.probeType === 2 || this.probeType === 3) {
-        var _this = this
-        this.Scroll.on('scroll', function (pos) {
-          _this.$emit('on-scroll', pos)
-        })
+        if (this.probeType === 2 || this.probeType === 3) {
+          var _this = this
+          this.Scroll.on('scroll', function (pos) {
+            _this.$emit('on-scroll', pos)
+          })
+        }
       }
     },
     refresh () {

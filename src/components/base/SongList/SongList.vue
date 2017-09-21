@@ -1,7 +1,7 @@
 <template>
   <div class="songList">
     <ul class="content">
-      <li class="list-item" v-for="song in songsList">
+      <li class="list-item" v-for="(song,index) in songsList" @click="selectItem(song,index)">
         <h2 class="name" v-html="song.name"></h2>
         <p class="desc">{{ song | desc }}</p>
       </li>
@@ -23,11 +23,16 @@ export default {
   },
   filters: {
     desc (song) {
-      return `${song.singer}。${song.album}`
+      return `${song.singer}～${song.album}`
     }
   },
   mounted () {
 //    console.log(this.songs)
+  },
+  methods: {
+    selectItem (item, index) {
+      this.$emit('select', item, index)
+    }
   }
 }
 </script>
