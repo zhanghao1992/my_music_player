@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :class="{fullScreen:fullScreen}" v-show="palyList.length>0">
+  <div class="player" :style="bgImg" :class="{fullScreen:fullScreen}" v-show="palyList.length>0">
     <transition name="normal-player">
       <div class="normal-player" v-show="fullScreen">
         <i class="icon iconfont icon-xiala" @click="hideNormalPlayer"></i>
@@ -10,18 +10,14 @@
           <h1 class="name" v-html="currentSong.name"></h1>
           <p class="singer" v-html="currentSong.singer"></p>
         </div>
-        <div class="content">
+        <div class="content" ref="spinning" :class="{paused:!playing}">
           <img :src="currentSong.image" alt="">
         </div>
         <div class="operators">
           <i class="icon iconfont icon-shunxubofang" @click=""></i>
-          <i class="icon iconfont icon-bofangqishangyiqu" @click=""></i>
-
-          <i class="icon iconfont icon-bofangqibofang" v-show="playing" @click=""></i>
-          <i class="icon iconfont icon-tingzhi" v-show="!playing" @click=""></i>
-
-          <i class="icon iconfont icon-bofangqishangyiqu1" @click=""></i>
-
+          <i class="icon iconfont icon-bofangqishangyiqu" @click="preSong"></i>
+          <i class="icon iconfont" :class="playIcon" @click="togglePlay"></i>
+          <i class="icon iconfont icon-bofangqishangyiqu1" @click="nextSong"></i>
           <!--<i class="icon iconfont icon-kongxin" @click=""></i>-->
           <i class="icon iconfont icon-xinxingshi" @click=""></i>
         </div>
@@ -29,18 +25,19 @@
     </transition>
     <transition name="mini-player" v-show="!fullScreen">
       <div class="mini-player" v-show="!fullScreen" @click="showFullScreen">
-        <img :src="currentSong.image" alt="">
+        <img ref="spinning1" :src="currentSong.image" :class="{paused:!playing}" alt="">
         <div class="info">
           <h1 class="name" v-html="currentSong.name"></h1>
           <p class="singer" v-html="currentSong.singer"></p>
         </div>
         <div class="operators">
-          <i class="icon iconfont icon-bofangqibofang" v-show="playing"></i>
-          <i class="icon iconfont icon-tingzhi" v-show="!playing" @click=""></i>
+          <i class="icon iconfont" v-show="!playing"></i>
+          <i class="icon iconfont" :class="playIcon" @click.stop="togglePlay"></i>
           <i class="icon iconfont icon-bofangliebiao"></i>
         </div>
       </div>
     </transition>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
   </div>
 </template>
 
@@ -49,10 +46,32 @@ import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   data () {
-    return {}
+    return {
+      songReady: false
+    }
   },
   computed: {
+    playIcon () {
+      return this.playing ? 'icon-tingzhi' : 'icon-bofangqibofang'
+    },
+    bgImg () {
+      return `background-image:url(${this.currentSong.image})`
+    },
     ...mapGetters(['playing', 'fullScreen', 'palyList', 'currentSong', 'currentIndex'])
+  },
+  watch: {
+    currentSong () {
+      this.$nextTick(() => {
+        this.$refs.audio.play()
+        console.log(this.currentSong)
+      })
+    },
+    playing (newPlaying) {
+      const audio = this.$refs.audio
+      this.$nextTick(() => {
+        newPlaying ? audio.play() : audio.pause()
+      })
+    }
   },
   methods: {
     hideNormalPlayer () {
@@ -61,8 +80,51 @@ export default {
     showFullScreen () {
       this.setFullScreen(true)
     },
+    togglePlay () {
+      this.setPlayingState(!this.playing)
+    },
+    nextSong () {
+      if (!this.songReady) {
+        return
+      }
+      this.songReady = false
+      let index = this.currentIndex
+      if (index >= this.palyList.length) {
+        index = 0
+      } else {
+        index++
+      }
+      this.setCurrentIndex(index)
+      if (!this.playing) {
+        this.togglePlay()
+      }
+    },
+    preSong () {
+      if (!this.songReady) {
+        return
+      }
+      this.songReady = false
+      let index = this.currentIndex
+      if (index <= 0) {
+        index = this.palyList.length - 1
+      } else {
+        index--
+      }
+      this.setCurrentIndex(index)
+      if (!this.playing) {
+        this.togglePlay()
+      }
+    },
+    ready () {
+      this.songReady = true
+    },
+    error () {
+      this.songReady = true
+    },
     ...mapMutations({
-      setFullScreen: 'SET_FULL_SCREEN'
+      setFullScreen: 'SET_FULL_SCREEN',
+      setPlayingState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENT_INDEX'
     })
   }
 }
@@ -114,6 +176,10 @@ export default {
       .name {
         font-size: 30/@r;
         line-height: 70/@r;
+        padding: 0 80/@r;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
       .singer {
         font-size: 22/@r;
@@ -123,14 +189,18 @@ export default {
       width: 480/@r;
       height: 480/@r;
       border: 15/@r solid #aaa;
-      margin: 180/@r auto 0;
+      margin: 100/@r auto 0;
       border-radius: 50%;
       overflow: hidden;
+      animation: spinning 20000ms linear infinite;
+      background: -webkit-gradient(linear, 0 0, 100% 100%, from(rgba(0, 0, 0, .5)), color-stop(0.8, rgba(255, 249, 255, .2)), to(rgba(255, 255, 255, .7)));
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+      &.paused {
+        animation-play-state: paused;
+      }
       img {
         width: 100%;
         height: 100%;
-        background: -webkit-gradient(linear, 0 0, 100% 100%, from(rgba(0, 0, 0, .5)), color-stop(0.8, rgba(255, 249, 255, .2)), to(rgba(255, 255, 255, .7)));
-        box-shadow: 0 0 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
       }
     }
     .operators {
@@ -172,6 +242,10 @@ export default {
       height: 80/@r;
       border-radius: 50%;
       margin-left: 40/@r;
+      animation: spinning 20000ms linear infinite;
+      &.paused {
+        animation-play-state: paused;
+      }
     }
     .info {
       margin-left: 60/@r;
@@ -217,5 +291,12 @@ export default {
 .mini-player-leave-to {
   transform: translate3d(0, 100%, 0)
 }
-
+@keyframes spinning {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
 </style>
