@@ -13,6 +13,11 @@
         <div class="content" ref="spinning" :class="{paused:!playing}">
           <img :src="currentSong.image" alt="">
         </div>
+        <div class="progress">
+          <span class="now">{{now | moment}}</span>
+          <x-progress class="bar" :percent="percent"></x-progress>
+          <span class="total">{{duration | moment}}</span>
+        </div>
         <div class="operators">
           <i class="icon iconfont icon-shunxubofang" @click=""></i>
           <i class="icon iconfont icon-bofangqishangyiqu" @click="preSong"></i>
@@ -37,17 +42,21 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="timeupdate" @ended="end"></audio>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import { mapGetters, mapMutations } from 'vuex'
+import { XProgress } from 'vux'
 
 export default {
   data () {
     return {
-      songReady: false
+      songReady: false,
+      percent: 0,
+      now: 0,
+      duration: 0
     }
   },
   computed: {
@@ -58,6 +67,13 @@ export default {
       return `background-image:url(${this.currentSong.image})`
     },
     ...mapGetters(['playing', 'fullScreen', 'palyList', 'currentSong', 'currentIndex'])
+  },
+  filters: {
+    moment (val) {
+      let m = Math.floor(val / 60) === 0 ? `00` : Math.floor(val / 60)
+      let s = val % 60 < 10 ? `0${val % 60}` : val % 60
+      return `${m}:${s}`
+    }
   },
   watch: {
     currentSong () {
@@ -72,6 +88,9 @@ export default {
         newPlaying ? audio.play() : audio.pause()
       })
     }
+  },
+  components: {
+    XProgress
   },
   methods: {
     hideNormalPlayer () {
@@ -115,11 +134,19 @@ export default {
         this.togglePlay()
       }
     },
-    ready () {
+    ready (e) {
       this.songReady = true
+      this.duration = Math.floor(e.target.duration)
     },
     error () {
       this.songReady = true
+    },
+    timeupdate (e) {
+      this.now = Math.floor(e.target.currentTime)
+      this.percent = (e.target.currentTime / this.duration) * 100
+    },
+    end () {
+      this.nextSong()
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
@@ -131,7 +158,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style lang="less">
 @r: 20rem;
 .player {
   position: absolute;
@@ -201,6 +228,22 @@ export default {
       img {
         width: 100%;
         height: 100%;
+      }
+    }
+    .progress {
+      padding: 0 30/@r;
+      margin-top: 240/@r;
+      display: flex;
+      .now, .total {
+        color: #e6b50d;
+      }
+      .bar {
+        flex: 1;
+        margin: 0 10/@r;
+        overflow: hidden;
+        .weui-progress__inner-bar {
+          background-color: #fead00;
+        }
       }
     }
     .operators {
