@@ -195,7 +195,7 @@ export default {
       img {
         width: 100%;
         height: 100%;
-        filter: blur(30px);
+        filter: blur(20px);
       }
     }
     .top {
@@ -213,8 +213,8 @@ export default {
       }
     }
     .content {
-      width: 480/@r;
-      height: 480/@r;
+      width: 440/@r;
+      height: 440/@r;
       border: 15/@r solid #aaa;
       margin: 100/@r auto 0;
       border-radius: 50%;
@@ -232,7 +232,11 @@ export default {
     }
     .progress {
       padding: 0 30/@r;
-      margin-top: 240/@r;
+      position: fixed;
+      width: 100%;
+      left: 0;
+      bottom: 140/@r;
+      box-sizing: border-box;
       display: flex;
       .now, .total {
         color: #e6b50d;
@@ -249,7 +253,7 @@ export default {
     .operators {
       position: absolute;
       left: 0;
-      bottom: 80/@r;
+      bottom: 50/@r;
       width: 100%;
       display: flex;
       justify-content: space-around;

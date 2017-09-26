@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <el-row class="tab">
-      <router-link tag="div" :to="{ path: '/recomend' }" active-class="tab-item-active">
+      <router-link tag="div" :to="{ path: '/recommend' }" active-class="tab-item-active">
         <el-col :span="6">
           <div class="tab-item">推荐</div>
         </el-col>
