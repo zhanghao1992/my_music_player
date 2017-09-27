@@ -23,6 +23,9 @@ Vue.use(VueLazyLoad, {
   loading: require('@/common/images/default.png')
 })
 
+import { ToastPlugin } from 'vux'
+Vue.use(ToastPlugin)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

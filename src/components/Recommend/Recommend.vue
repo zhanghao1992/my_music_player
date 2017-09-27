@@ -80,7 +80,7 @@ export default {
         }
 //        console.log(json)
       }).catch(err => {
-        console.log(err)
+        this.$vux.toast.text(err, 'middle')
       })
     },
     // 获取推荐列表
@@ -107,7 +107,7 @@ export default {
         }
 //        console.log(this.discList)
       }).catch(err => {
-        console.log(err)
+        this.$vux.toast.text(err, 'middle')
       })
     },
     // 图片记载完毕刷新滚动组件

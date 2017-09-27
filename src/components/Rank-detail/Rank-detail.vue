@@ -13,52 +13,47 @@ export default {
   name: '',
   data () {
     return {
-      songsList: []
+      songsList: [],
+      bgImg: ''
     }
   },
   computed: {
     title () {
-      return this.singer.name
+      return this.rank.topTitle
     },
-    bgImg () {
-      return this.singer.avatar
-    },
-    ...mapGetters(['singer'])
+    ...mapGetters(['rank'])
   },
   components: {
     MusicList
   },
   created () {
 //    console.log(this.singer)
-    this._getSingerDetail()
+    this._getRankDetail()
   },
   methods: {
-    _getSingerDetail () {
-      if (!this.singer.id) {
-        this.$router.push({path: '/singer'})
+    _getRankDetail () {
+      if (!this.rank.id) {
+        this.$router.push({path: '/rank'})
         return
       }
-      this.$jsonp('/qq_music_api/v8/fcg-bin/fcg_v8_singer_track_cp.fcg', {
-        g_tk: 989808312,
+      this.$jsonp('/qq_music_api/v8/fcg-bin/fcg_v8_toplist_cp.fcg', {
         callbackQuery: 'jsonpCallback',
-        loginUin: 0,
-        hostUin: 0,
-        format: 'jsonp',
+        g_tk: 989808312,
+        uin: 0,
+        format: 'json',
         inCharset: 'utf-8',
         outCharset: 'utf-8',
         notice: 0,
-        platform: 'yqq',
-        needNewCode: 0,
-        singermid: this.singer.id,
-        order: 'listen',
-        begin: 0,
-        num: 100,
-        songstatus: 1
-      }).then(jsonp => {
-        if (jsonp.code === 0) {
-          this.songsList = this._normallizeSongs(jsonp.data.list)
+        platform: 'h5',
+        needNewCode: 1,
+        tpl: 3,
+        page: 'detail',
+        topid: this.rank.id
+      }).then(json => {
+        if (json.code === 0) {
+          this.bgImg = json.topinfo.pic_album
+          this.songsList = this._normallizeSongs(json.songlist)
         }
-        console.log(this._normallizeSongs(jsonp.data.list))
       }).catch(err => {
         this.$vux.toast.text(err, 'middle')
       })
@@ -66,8 +61,8 @@ export default {
     _normallizeSongs (list) {
       let ret = []
       list.forEach((item) => {
-        let {musicData} = item
-        if (musicData.songid && musicData.albumid) {
+        let musicData = item.data
+        if (musicData.albumid) {
           ret.push(createSong(musicData))
         }
       })

@@ -107,7 +107,6 @@ export default {
   height: 100%;
   overflow: hidden;
   position: relative;
-  background: #3b4750;
   .list-out {
     .itemgroup {
       .title {

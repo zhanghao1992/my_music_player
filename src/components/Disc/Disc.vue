@@ -60,7 +60,7 @@ export default {
           this.songsList = this._normallizeSongs(jsonp.cdlist[0].songlist)
         }
       }).catch(err => {
-        console.log(err)
+        this.$vux.toast.text(err, 'middle')
       })
     },
     _normallizeSongs (list) {

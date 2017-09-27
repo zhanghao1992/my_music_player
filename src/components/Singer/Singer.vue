@@ -52,7 +52,7 @@ export default {
         }
 //        console.log(this._normalizeSinger(jsonp.data.list))
       }).catch(err => {
-        console.log(err)
+        this.$vux.toast.text(err, 'middle')
       })
     },
     _normalizeSinger (list) {

@@ -144,7 +144,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #f60;
+      color: #fff;
     }
     .icon-fanhui {
       position: absolute;

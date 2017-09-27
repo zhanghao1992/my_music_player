@@ -15,7 +15,7 @@
         </div>
         <div class="progress">
           <span class="now">{{now | moment}}</span>
-          <x-progress class="bar" :percent="percent"></x-progress>
+          <x-progress class="bar" :percent="percent" :show-cancel="false"></x-progress>
           <span class="total">{{duration | moment}}</span>
         </div>
         <div class="operators">
