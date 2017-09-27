@@ -2,8 +2,13 @@
   <div class="songList">
     <ul class="content">
       <li class="list-item" v-for="(song,index) in songsList" @click="selectItem(song,index)">
-        <h2 class="name" v-html="song.name"></h2>
-        <p class="desc">{{ song | desc }}</p>
+        <div v-if="rank">
+          asdasd
+        </div>
+        <div>
+          <h2 class="name" v-html="song.name"></h2>
+          <p class="desc">{{ song | desc }}</p>
+        </div>
       </li>
     </ul>
   </div>
@@ -16,6 +21,10 @@ export default {
     songsList: {
       type: Array,
       default: []
+    },
+    rank: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -45,6 +54,7 @@ export default {
   .content {
     .list-item {
       margin-top: 16/@r;
+      display: flex;
       .name {
         font-size: 22/@r;
         line-height: 28/@r;

@@ -12,7 +12,7 @@
     <div class="bg-layer" ref="bgLayer"></div>
     <scroll ref="songsWrapper" class="scroller" :probe-type="3" :data="songsList" @on-scroll="onScroll">
       <div class="songsWrapper">
-        <song-list :songs-list="songsList" @select="selectItem"></song-list>
+        <song-list :songs-list="songsList" @select="selectItem" :rank="rank"></song-list>
         <loading :show="!songsList.length"></loading>
       </div>
     </scroll>
@@ -38,6 +38,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    rank: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
