@@ -2,8 +2,12 @@
   <div class="songList">
     <ul class="content">
       <li class="list-item" v-for="(song,index) in songsList" @click="selectItem(song,index)">
-        <div v-if="rank">
-          asdasd
+        <div v-if="rank" class="rank">
+          <!--:class="getRnakClass(index)"-->
+          <i v-if="index===0" class="icon iconfont icon-guanjun"></i>
+          <i v-else-if="index===1" class="icon iconfont icon-guanjun"></i>
+          <i v-else-if="index===2" class="icon iconfont icon-guanjun"></i>
+          <i v-else class="icon">{{index}}</i>
         </div>
         <div>
           <h2 class="name" v-html="song.name"></h2>
@@ -55,6 +59,18 @@ export default {
     .list-item {
       margin-top: 16/@r;
       display: flex;
+      .rank{
+        margin-right: 18/@r;
+        display: flex;
+        align-items: center;
+        .icon {
+          font-size: 24/@r;
+          &.icon-guanjun {
+            color: #bcc21a;
+          }
+        }
+      }
+
       .name {
         font-size: 22/@r;
         line-height: 28/@r;
