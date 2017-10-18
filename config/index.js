@@ -39,6 +39,17 @@ module.exports = {
         pathRewrite: {
           '^/qq_music_api': '/'
         }
+      },
+      '/ncs_api': {
+        target: 'http://172.21.122.186:7073',
+        // headers: {
+        //   referer: 'https://y.qq.com/portal/playlist.html',
+        //   host: 'c.y.qq.com'
+        // },
+        changeOrigin: true,
+        pathRewrite: {
+          '^/ncs_api': '/'
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
