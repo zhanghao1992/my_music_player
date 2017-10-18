@@ -4,9 +4,9 @@
       <li class="list-item" v-for="(song,index) in songsList" @click="selectItem(song,index)">
         <div v-if="rank" class="rank">
           <!--:class="getRnakClass(index)"-->
-          <i v-if="index===0" class="icon iconfont icon-guanjun"></i>
-          <i v-else-if="index===1" class="icon iconfont icon-guanjun"></i>
-          <i v-else-if="index===2" class="icon iconfont icon-guanjun"></i>
+          <i v-if="index===0" class="icon iconfont icon-guanjunhuojiang-copy guanjun"></i>
+          <i v-else-if="index===1" class="icon iconfont icon-guanjunhuojiang-copy yajun"></i>
+          <i v-else-if="index===2" class="icon iconfont icon-guanjunhuojiang-copy jijun"></i>
           <i v-else class="icon">{{index}}</i>
         </div>
         <div>
@@ -59,14 +59,22 @@ export default {
     .list-item {
       margin-top: 16/@r;
       display: flex;
-      .rank{
+      .rank {
         margin-right: 18/@r;
         display: flex;
         align-items: center;
         .icon {
           font-size: 24/@r;
-          &.icon-guanjun {
-            color: #bcc21a;
+          color: #aaa;
+          font-style: normal;
+          &.guanjun {
+            color: #f1ff19;
+          }
+          &.yajun {
+            color: #f5f7f2;
+          }
+          &.jijun {
+            color: #f7a507;
           }
         }
       }

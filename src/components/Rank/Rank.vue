@@ -77,9 +77,7 @@ export default {
         needNewCode: 0
       }).then(jsonp => {
         if (jsonp.code === 0) {
-          console.log(jsonp.data.topList)
           this.rankList = jsonp.data.topList
-          console.log(typeof this.rankList)
         }
       }).catch(err => {
         this.$vux.toast.text(err, 'middle')

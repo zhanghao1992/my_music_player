@@ -13,9 +13,9 @@
         <div class="content" ref="spinning" :class="{paused:!playing}">
           <img :src="currentSong.image" alt="">
         </div>
-        <div class="progress">
+        <div class="pro-box">
           <span class="now">{{now | moment}}</span>
-          <x-progress class="bar" :percent="percent" :show-cancel="false"></x-progress>
+          <m-progress class="bar" :percent="percent" @barDrag="barDragHandler" @barDragStart="barDragStartHandler"></m-progress>
           <span class="total">{{duration | moment}}</span>
         </div>
         <div class="operators">
@@ -48,7 +48,7 @@
 
 <script type="text/ecmascript-6">
 import { mapGetters, mapMutations } from 'vuex'
-import { XProgress } from 'vux'
+import MProgress from '@/components/base/Progress/Progress'
 
 export default {
   data () {
@@ -79,7 +79,7 @@ export default {
     currentSong () {
       this.$nextTick(() => {
         this.$refs.audio.play()
-        console.log(this.currentSong)
+//        console.log(this.currentSong)
       })
     },
     playing (newPlaying) {
@@ -90,7 +90,7 @@ export default {
     }
   },
   components: {
-    XProgress
+    MProgress
   },
   methods: {
     hideNormalPlayer () {
@@ -101,6 +101,14 @@ export default {
     },
     togglePlay () {
       this.setPlayingState(!this.playing)
+    },
+    barDragStartHandler () {
+      this.setPlayingState(false)
+    },
+    barDragHandler (newPercent) {
+      this.percent = newPercent
+      this.now = Math.floor(this.percent / 100 * this.duration)
+      this.$refs.audio.currentTime = this.now
     },
     nextSong () {
       if (!this.songReady) {
@@ -151,7 +159,8 @@ export default {
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
       setPlayingState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENT_INDEX'
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      SET_PLAY_MODE: 'SET_PLAY_MODE'
     })
   }
 }
@@ -230,7 +239,7 @@ export default {
         height: 100%;
       }
     }
-    .progress {
+    .pro-box {
       padding: 0 30/@r;
       position: fixed;
       width: 100%;
@@ -238,16 +247,14 @@ export default {
       bottom: 140/@r;
       box-sizing: border-box;
       display: flex;
+      align-items: center;
       .now, .total {
         color: #e6b50d;
       }
       .bar {
         flex: 1;
-        margin: 0 10/@r;
-        overflow: hidden;
-        .weui-progress__inner-bar {
-          background-color: #fead00;
-        }
+        margin: 0 12/@r;
+        overflow: visible;
       }
     }
     .operators {

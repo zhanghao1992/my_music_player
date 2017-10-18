@@ -55,11 +55,6 @@ export default {
     console.log(_.assign({'user': 'barney'}, {'age': 40}, {'user': 'fred'}))
     this._getSliserList()
     this._getDiscList()
-    this.$http.get('/ncs_api/admin/getPageManageInfo', {}).then(json => {
-      console.log(json)
-    }).catch(err => {
-      this.$vux.toast.text(err, 'middle')
-    })
   },
   methods: {
     toDetail (item) {

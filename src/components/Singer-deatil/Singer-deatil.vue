@@ -58,7 +58,6 @@ export default {
         if (jsonp.code === 0) {
           this.songsList = this._normallizeSongs(jsonp.data.list)
         }
-        console.log(this._normallizeSongs(jsonp.data.list))
       }).catch(err => {
         this.$vux.toast.text(err, 'middle')
       })

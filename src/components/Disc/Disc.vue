@@ -56,7 +56,7 @@ export default {
         needNewCode: 0
       }).then(jsonp => {
         if (jsonp.code === 0) {
-          console.log(jsonp.cdlist[0].songlist)
+//          console.log(jsonp.cdlist[0].songlist)
           this.songsList = this._normallizeSongs(jsonp.cdlist[0].songlist)
         }
       }).catch(err => {
