@@ -32,23 +32,12 @@ module.exports = {
       '/qq_music_api': {
         target: 'https://c.y.qq.com/',
         headers: {
-          referer: 'https://y.qq.com/portal/playlist.html',
+          referer: 'https://y.qq.com/',
           host: 'c.y.qq.com'
         },
         changeOrigin: true,
         pathRewrite: {
           '^/qq_music_api': '/'
-        }
-      },
-      '/ncs_api': {
-        target: 'http://172.21.122.186:7073',
-        // headers: {
-        //   referer: 'https://y.qq.com/portal/playlist.html',
-        //   host: 'c.y.qq.com'
-        // },
-        changeOrigin: true,
-        pathRewrite: {
-          '^/ncs_api': '/'
         }
       }
     },

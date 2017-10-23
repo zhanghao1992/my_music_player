@@ -13,6 +13,15 @@
         <div class="content" ref="spinning" :class="{paused:!playing}">
           <img :src="currentSong.image" alt="">
         </div>
+        <div class="lyric-box" v-if="lyric">
+          <scroll ref="lyric" style="height: 100%;" :data="lyric&&lyric.lines">
+            <div>
+              <slot>
+                <div :class="{'active':lyricLineNum===index}" class="line" ref="line" v-for="(line,index) in lyric.lines">{{line.txt}}</div>
+              </slot>
+            </div>
+          </scroll>
+        </div>
         <div class="pro-box">
           <span class="now">{{now | moment}}</span>
           <m-progress class="bar" :percent="percent" @barDrag="barDragHandler" @barDragStart="barDragStartHandler"></m-progress>
@@ -49,6 +58,9 @@
 <script type="text/ecmascript-6">
 import { mapGetters, mapMutations } from 'vuex'
 import MProgress from '@/components/base/Progress/Progress'
+import Scroll from '@/components/base/scroll/scroll'
+import { Base64 } from 'js-base64'
+import LyricParser from 'lyric-parser'
 
 export default {
   data () {
@@ -56,7 +68,9 @@ export default {
       songReady: false,
       percent: 0,
       now: 0,
-      duration: 0
+      duration: 0,
+      lyric: null,
+      lyricLineNum: 0
     }
   },
   computed: {
@@ -91,10 +105,13 @@ export default {
       if (newSong.id === oldSong.id) {
         return
       }
-      this.$nextTick(() => {
+      if (this.lyric) {
+        this.lyric.stop()
+      }
+      setTimeout(() => {
         this.$refs.audio.play()
-//        console.log(this.currentSong)
-      })
+        this._getLyric()
+      }, 1000)
     },
     playing (newPlaying) {
       const audio = this.$refs.audio
@@ -104,7 +121,8 @@ export default {
     }
   },
   components: {
-    MProgress
+    MProgress,
+    Scroll
   },
   methods: {
     hideNormalPlayer () {
@@ -115,54 +133,75 @@ export default {
     },
     togglePlay () {
       this.setPlayingState(!this.playing)
+      if (this.lyric) {
+        this.lyric.togglePlay()
+      }
     },
     barDragStartHandler () {
       this.setPlayingState(false)
     },
     barDragHandler (newPercent) {
       this.percent = newPercent
-      this.now = Math.floor(this.percent / 100 * this.duration)
+      this.now = Math.floor((this.percent / 100) * this.duration)
       this.$refs.audio.currentTime = this.now
+      if (this.lyric) {
+        this.lyric.seek(this.now * 1000)
+      }
     },
     loopSong () {
       this.$refs.audio.currentTime = 0
       this.$refs.audio.play()
+      if (this.lyric) {
+        this.lyric.seek(0)
+      }
     },
     nextSong () {
       if (!this.songReady) {
         return
       }
-      this.songReady = false
-      let index = this.currentIndex
-      if (index >= this.playList.length) {
-        index = 0
+      if (this.playList.length === 1) {
+        this.loopSong()
       } else {
-        index++
+        let index = this.currentIndex
+        if (index >= this.playList.length) {
+          index = 0
+        } else {
+          index++
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlay()
+        }
       }
-      this.setCurrentIndex(index)
-      if (!this.playing) {
-        this.togglePlay()
-      }
+      this.songReady = false
     },
     preSong () {
       if (!this.songReady) {
         return
       }
-      this.songReady = false
-      let index = this.currentIndex
-      if (index <= 0) {
-        index = this.playList.length - 1
+      if (this.playList.length === 1) {
+        this.loopSong()
       } else {
-        index--
+        let index = this.currentIndex
+        if (index <= 0) {
+          index = this.playList.length - 1
+        } else {
+          index--
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlay()
+        }
       }
-      this.setCurrentIndex(index)
-      if (!this.playing) {
-        this.togglePlay()
-      }
+      this.songReady = false
     },
     ready (e) {
       this.songReady = true
       this.duration = Math.floor(e.target.duration)
+//      setTimeout(() => {
+//        this.$refs.audio.play()
+//        this._getLyric()
+//      }, 1000)
     },
     error () {
       this.songReady = true
@@ -181,8 +220,8 @@ export default {
     changePlayMode () {
       this.setPlayMode((this.mode + 1) % 3)
       let playList = this.sequenceList
-      console.log(this.playList)
-      console.log(this.sequenceList)
+//      console.log(this.playList)
+//      console.log(this.sequenceList)
       if (this.mode === 0) {
         this.$vux.toast.text('顺序播放')
       } else if (this.mode === 0) {
@@ -210,6 +249,46 @@ export default {
         _arr[len - i - 1] = temp
       }
       return _arr
+    },
+    _getLyric () {
+      this.$jsonp('/qq_music_api/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
+        songmid: this.currentSong.mid,
+        g_tk: 5381,
+        callback: 'MusicJsonCallback_lrc',
+        callbackQuery: 'jsonpCallback',
+        jsonpCallback: 'MusicJsonCallback_lrc',
+        pcachetime: new Date().getTime(),
+        loginUin: 0,
+        hostUin: 0,
+        format: 'jsonp',
+        inCharset: 'utf8',
+        outCharset: 'utf-8',
+        notice: 0,
+        platform: 'yqq',
+        needNewCode: 0
+      }).then(jsonp => {
+        if (jsonp.code === 0) {
+          this.lyric = new LyricParser(Base64.decode(jsonp.lyric), this.handleLyric)
+          if (this.playing) {
+            this.lyric.play()
+//            console.log(this.lyric)
+          }
+        }
+      }).catch(err => {
+        this.$vux.toast.text(err, 'middle')
+        this.lyric = null
+        this.lyricLineNum = 0
+      })
+    },
+    handleLyric ({lineNum, txt}) {
+      this.lyricLineNum = lineNum
+      const lineEle = this.$refs.line[lineNum - 5]
+      if (lineNum > 5) {
+        this.$refs.lyric.scrollToElement(lineEle, 1000)
+      } else {
+        this.$refs.lyric.scrollTo(0, 0, 1000)
+      }
+      console.log(lineNum)
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
@@ -281,7 +360,7 @@ export default {
       width: 440/@r;
       height: 440/@r;
       border: 15/@r solid #aaa;
-      margin: 100/@r auto 0;
+      margin: 40/@r auto 0;
       border-radius: 50%;
       overflow: hidden;
       animation: spinning 20000ms linear infinite;
@@ -293,6 +372,20 @@ export default {
       img {
         width: 100%;
         height: 100%;
+      }
+    }
+    .lyric-box {
+      position: absolute;
+      width: 100%;
+      top: 620/@r;
+      bottom: 200/@r;
+      overflow: hidden;
+      text-align: center;
+      .line {
+        line-height: 34/@r;
+        &.active {
+          color: #e6b50d;
+        }
       }
     }
     .pro-box {
