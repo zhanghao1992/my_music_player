@@ -3,7 +3,7 @@
     <div class="title" ref="title">
       <h1 v-html="title"></h1>
       <i class="icon iconfont icon-fanhui" @click="back"></i>
-      <div class="playAll" v-show="showflag&&songsList.length>0">
+      <div class="playAll" v-show="showflag&&songsList.length>0" @click="payAllRandom">
         <i class="icon iconfont icon-bofangqibofang"></i>
         随机播放全部
       </div>
@@ -72,13 +72,17 @@ export default {
       this.$router.back()
     },
     selectItem (item, index) {
-      console.log('sss' + index)
       this.selectPlay({
         list: this.songsList,
         index
       })
     },
-    ...mapActions(['selectPlay'])
+    payAllRandom () {
+      this.randomPlay({
+        list: this.songsList
+      })
+    },
+    ...mapActions(['selectPlay', 'randomPlay'])
   },
   watch: {
     scrollY (newY) {

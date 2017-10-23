@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :style="bgImg" :class="{fullScreen:fullScreen}" v-show="palyList.length>0">
+  <div class="player" :style="bgImg" :class="{fullScreen:fullScreen}" v-show="playList.length>0">
     <transition name="normal-player">
       <div class="normal-player" v-show="fullScreen">
         <i class="icon iconfont icon-xiala" @click="hideNormalPlayer"></i>
@@ -19,7 +19,7 @@
           <span class="total">{{duration | moment}}</span>
         </div>
         <div class="operators">
-          <i class="icon iconfont icon-shunxubofang" @click=""></i>
+          <i class="icon iconfont" :class="iconMode" @click="changePlayMode"></i>
           <i class="icon iconfont icon-bofangqishangyiqu" @click="preSong"></i>
           <i class="icon iconfont" :class="playIcon" @click="togglePlay"></i>
           <i class="icon iconfont icon-bofangqishangyiqu1" @click="nextSong"></i>
@@ -66,7 +66,18 @@ export default {
     bgImg () {
       return `background-image:url(${this.currentSong.image})`
     },
-    ...mapGetters(['playing', 'fullScreen', 'palyList', 'currentSong', 'currentIndex'])
+    iconMode () {
+      return this.mode === 0 ? 'icon-shunxubofang' : this.mode === 1 ? 'icon-xunhuanbofang' : 'icon-suijibofang'
+    },
+    ...mapGetters([
+      'playing',
+      'fullScreen',
+      'playList',
+      'currentSong',
+      'currentIndex',
+      'mode',
+      'sequenceList'
+    ])
   },
   filters: {
     moment (val) {
@@ -76,7 +87,10 @@ export default {
     }
   },
   watch: {
-    currentSong () {
+    currentSong (newSong, oldSong) {
+      if (newSong.id === oldSong.id) {
+        return
+      }
       this.$nextTick(() => {
         this.$refs.audio.play()
 //        console.log(this.currentSong)
@@ -110,13 +124,17 @@ export default {
       this.now = Math.floor(this.percent / 100 * this.duration)
       this.$refs.audio.currentTime = this.now
     },
+    loopSong () {
+      this.$refs.audio.currentTime = 0
+      this.$refs.audio.play()
+    },
     nextSong () {
       if (!this.songReady) {
         return
       }
       this.songReady = false
       let index = this.currentIndex
-      if (index >= this.palyList.length) {
+      if (index >= this.playList.length) {
         index = 0
       } else {
         index++
@@ -133,7 +151,7 @@ export default {
       this.songReady = false
       let index = this.currentIndex
       if (index <= 0) {
-        index = this.palyList.length - 1
+        index = this.playList.length - 1
       } else {
         index--
       }
@@ -154,13 +172,51 @@ export default {
       this.percent = (e.target.currentTime / this.duration) * 100
     },
     end () {
-      this.nextSong()
+      if (this.mode === 1) {
+        this.loopSong()
+      } else {
+        this.nextSong()
+      }
+    },
+    changePlayMode () {
+      this.setPlayMode((this.mode + 1) % 3)
+      let playList = this.sequenceList
+      console.log(this.playList)
+      console.log(this.sequenceList)
+      if (this.mode === 0) {
+        this.$vux.toast.text('顺序播放')
+      } else if (this.mode === 0) {
+        this.$vux.toast.text('循环播放')
+      } else {
+        this.$vux.toast.text('随机播放')
+        playList = this.shuffle(playList)
+      }
+      this.resetCurrentIndex(playList)
+      this.setPlayList(playList)
+    },
+    resetCurrentIndex (playList) {
+      let index = playList.findIndex((item) => {
+        return item.id === this.currentSong.id
+      })
+      this.setCurrentIndex(index)
+    },
+    shuffle (arr) {
+      let _arr = arr.slice()
+      let len = _arr.length
+      for (let i = 0; i < len - 1; i++) {
+        let idx = Math.floor(Math.random() * (len - i))
+        let temp = _arr[idx]
+        _arr[idx] = _arr[len - i - 1]
+        _arr[len - i - 1] = temp
+      }
+      return _arr
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
       setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENT_INDEX',
-      SET_PLAY_MODE: 'SET_PLAY_MODE'
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAY_LIST'
     })
   }
 }
