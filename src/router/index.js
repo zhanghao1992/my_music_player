@@ -7,11 +7,14 @@ import SingerDeatil from '@/components/singer-deatil/singer-deatil'
 import Rank from '@/components/Rank/Rank'
 import RankDetail from '@/components/Rank-detail/Rank-detail'
 import Search from '@/components/Search/Search'
+import NotFoundComponent from '@/components/NotFoundComponent/NotFoundComponent'
 
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
+    {path: '*', component: NotFoundComponent},
     {
       path: '/',
       redirect: '/recommend'

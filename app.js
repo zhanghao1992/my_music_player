@@ -2,6 +2,9 @@ var express = require('express')
 // var config = require('./config/index')
 var proxy = require('http-proxy-middleware')
 
+// vue history模式
+var history = require('connect-history-api-fallback')
+// var connect = require('connect')
 // var port = process.env.PORT || config.dev.port
 
 var port = 9001
@@ -9,6 +12,15 @@ var port = 9001
 var app = express()
 
 var router = express.Router()
+
+app.use(history({
+  rewrites: [
+    {
+      from: /^\/abc$/,
+      to: '/'
+    }
+  ]
+}))
 
 router.get('/', function (req, res, next) {
   req.url = 'index.html'
