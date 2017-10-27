@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div class="singer" ref="singerWrapper" :data="singers">
-      <list-view :data="singers" @to-detail="toDetail"></list-view>
-      <loading :show="!singers.length"></loading>
+    <div class="singerWrapper">
+      <div class="singer" ref="singerWrapper" :data="singers">
+        <list-view ref="list" :data="singers" @to-detail="toDetail"></list-view>
+        <loading :show="!singers.length"></loading>
+      </div>
     </div>
     <router-view></router-view>
   </div>
@@ -11,10 +13,12 @@
 <script type="text/ecmascript-6">
 import ListView from '@/components/base/ListView/ListView'
 import Singer from '@/common/js/singer'
+import { playListMixin } from '@/common/js/mixin'
 import { Loading } from 'vux'
 import { mapMutations } from 'vuex'
 
 export default {
+  mixins: [playListMixin],
   data () {
     return {
       singers: []
@@ -30,6 +34,11 @@ export default {
     Loading
   },
   methods: {
+    handlePlayList (playList) {
+      const bottom = playList.length > 0 ? '5rem' : ''
+      this.$refs.singerWrapper.style.bottom = bottom
+      this.$refs.list.refresh()
+    },
     _getSingersList () {
       this.$jsonp('/qq_music_api/v8/fcg-bin/v8.fcg', {
         channel: 'singer',
@@ -104,9 +113,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @r: 20rem;
-.singer {
+.singerWrapper {
   position: absolute;
   top: 170/@r;
+  bottom: 0;
+  width: 32rem;
+}
+.singer {
+  position: absolute;
+  top: 0;
   bottom: 0;
   width: 32rem;
   overflow: hidden;

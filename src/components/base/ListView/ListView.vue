@@ -95,6 +95,9 @@ export default {
     },
     selectSinger (item) {
       this.$emit('to-detail', item)
+    },
+    refresh () {
+      this.$refs.listWrapper.refresh()
     }
   }
 }

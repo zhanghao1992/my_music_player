@@ -1,42 +1,45 @@
 <template>
   <div>
-    <scroll class="recommend" ref="recommendScroll" :data="discList">
-      <div>
-        <swiper class="slider" loop auto height="150px" :interval="4000">
-          <swiper-item v-for="(slider, index) in sliderList" :key="index">
-            <a :href="slider.linkUrl">
-              <img @loaded="imgLoaded" v-lazy="slider.picUrl" alt="">
-            </a>
-          </swiper-item>
-        </swiper>
+    <div class="recommendWrapper" ref="recommendWrapper">
+      <scroll class="recommend" ref="recommendScroll" :data="discList">
+            <div>
+              <swiper class="slider" loop auto height="150px" :interval="4000">
+                <swiper-item v-for="(slider, index) in sliderList" :key="index">
+                  <a :href="slider.linkUrl">
+                    <img @loaded="imgLoaded" v-lazy="slider.picUrl" alt="">
+                  </a>
+                </swiper-item>
+              </swiper>
 
-        <div class="recommend-list">
-          <h1 class="recommend-list-title">热门推荐</h1>
-          <ul>
-            <li class="recommend-list-item" v-for="(item, index) in discList" @click="toDetail(item)">
-              <img class="img" v-lazy="item.imgurl" alt="">
-              <div class="right">
-                <h4 class="creator" v-html="item.creator.name"></h4>
-                <p class="dissname" v-html="item.dissname"></p>
+              <div class="recommend-list">
+                <h1 class="recommend-list-title">热门推荐</h1>
+                <ul>
+                  <li class="recommend-list-item" v-for="(item, index) in discList" @click="toDetail(item)">
+                    <img class="img" v-lazy="item.imgurl" alt="">
+                    <div class="right">
+                      <h4 class="creator" v-html="item.creator.name"></h4>
+                      <p class="dissname" v-html="item.dissname"></p>
+                    </div>
+                  </li>
+                </ul>
               </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <loading :show="!discList.length"></loading>
-    </scroll>
+            </div>
+            <loading :show="!discList.length"></loading>
+          </scroll>
+    </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import Scroll from '@/components/base/scroll/scroll'
+import { playListMixin } from '@/common/js/mixin'
 import { Swiper, SwiperItem, Loading } from 'vux'
 import { mapMutations } from 'vuex'
 import _ from 'lodash'
 
 export default {
-  name: '',
+  mixins: [playListMixin],
   data () {
     return {
       sliderList: [],
@@ -63,6 +66,11 @@ export default {
         path: `/recommend/${item.dissid}`
       })
       this.setDisc(item)
+    },
+    handlePlayList (playList) {
+      const bottom = playList.length > 0 ? '5rem' : ''
+      this.$refs.recommendWrapper.style.bottom = bottom
+      this.$refs.recommendScroll.refresh()
     },
     // 获取轮播图列表
     _getSliserList () {
@@ -127,9 +135,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 @r: 20rem;
-.recommend {
+.recommendWrapper {
   position: absolute;
   top: 170/@r;
+  bottom: 0;
+  width: 32rem;
+}
+.recommend {
+  position: absolute;
+  top: 0;
   bottom: 0;
   width: 32rem;
   overflow: hidden;

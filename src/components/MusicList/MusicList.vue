@@ -1,5 +1,5 @@
 <template>
-  <div class="MusicList">
+  <div ref="MusicList" class="MusicList">
     <div class="title" ref="title">
       <h1 v-html="title"></h1>
       <i class="icon iconfont icon-fanhui" @click="back"></i>
@@ -22,10 +22,12 @@
 <script type="text/ecmascript-6">
 import SongList from '@/components/base/SongList/SongList'
 import Scroll from '@/components/base/scroll/scroll'
+import { playListMixin } from '@/common/js/mixin'
 import { Loading } from 'vux'
 import { mapActions } from 'vuex'
 
 export default {
+  mixins: [playListMixin],
   props: {
     bgImg: {
       type: String,
@@ -82,6 +84,11 @@ export default {
         list: this.songsList
       })
     },
+    handlePlayList (playList) {
+      const bottom = playList.length > 0 ? '5rem' : ''
+      this.$refs.MusicList.style.bottom = bottom
+      this.$refs.songsWrapper.refresh()
+    },
     ...mapActions(['selectPlay', 'randomPlay'])
   },
   watch: {
@@ -123,9 +130,9 @@ export default {
 .MusicList {
   position: absolute;
   width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
+  bottom: 0;
   background: rgb(7, 17, 27);
   z-index: 10;
   .title {
@@ -182,7 +189,7 @@ export default {
     position: absolute;
     width: 100%;
     top: 440/@r;
-    height: 100%;
+    height: 120%;
     z-index: 2;
   }
   .scroller {

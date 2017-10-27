@@ -1,29 +1,31 @@
 <template>
   <div>
-    <scroll class="rank" :data="rankList">
-      <ul class="rank-list">
-        <li class="rakn-list-item" v-for="(item,index) in rankList" @click="toDetail(item)" :key="index">
-          <div class="left">
-            <img class="img" :src="item.picUrl" alt="">
-            <!--{{item.topTitle | formatTitle}}-->
-            <span class="listen">
-              <i class="icon iconfont icon-ermai"></i>
-              {{item.listenCount | formatNumber}}
-            </span>
-          </div>
-          <div class="right">
-            <h1 class="title">{{item.topTitle}}</h1>
-            <ul class="miniList">
-              <li v-for="(miniItem,miniIndex) in item.songList" :key="miniIndex">
-                <span class="index">{{miniIndex + 1}}</span>
-                <span class="song-name">{{miniItem.songname}}</span>
-                <span class="singer-name">{{miniItem.singername}}</span>
+    <div class="rankWrapper" ref="rankWrapper">
+      <scroll class="rank" ref="rank" :data="rankList">
+            <ul class="rank-list">
+              <li class="rakn-list-item" v-for="(item,index) in rankList" @click="toDetail(item)" :key="index">
+                <div class="left">
+                  <img class="img" :src="item.picUrl" alt="">
+                  <!--{{item.topTitle | formatTitle}}-->
+                  <span class="listen">
+                    <i class="icon iconfont icon-ermai"></i>
+                    {{item.listenCount | formatNumber}}
+                  </span>
+                </div>
+                <div class="right">
+                  <h1 class="title">{{item.topTitle}}</h1>
+                  <ul class="miniList">
+                    <li v-for="(miniItem,miniIndex) in item.songList" :key="miniIndex">
+                      <span class="index">{{miniIndex + 1}}</span>
+                      <span class="song-name">{{miniItem.songname}}</span>
+                      <span class="singer-name">{{miniItem.singername}}</span>
+                    </li>
+                  </ul>
+                </div>
               </li>
             </ul>
-          </div>
-        </li>
-      </ul>
-    </scroll>
+          </scroll>
+    </div>
     <router-view></router-view>
     <loading :show="!rankList.length"></loading>
   </div>
@@ -31,10 +33,12 @@
 
 <script type="text/ecmascript-6">
 import Scroll from '@/components/base/scroll/scroll'
+import { playListMixin } from '@/common/js/mixin'
 import { Loading } from 'vux'
 import { mapMutations } from 'vuex'
 
 export default {
+  mixins: [playListMixin],
   data () {
     return {
       rankList: []
@@ -63,6 +67,11 @@ export default {
     toDetail (item) {
       this.$router.push(`/rank/${item.id}`)
       this.setRank(item)
+    },
+    handlePlayList (playList) {
+      const bottom = playList.length > 0 ? '5rem' : ''
+      this.$refs.rankWrapper.style.bottom = bottom
+      this.$refs.rank.refresh()
     },
     _getRankList () {
       this.$jsonp('/qq_music_api/v8/fcg-bin/fcg_myqq_toplist.fcg', {
@@ -93,9 +102,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @r: 20rem;
-.rank {
+.rankWrapper {
   position: absolute;
   top: 170/@r;
+  bottom: 0;
+  width: 32rem;
+  overflow: hidden;
+}
+.rank {
+  position: absolute;
+  top: 0;
   bottom: 0;
   width: 32rem;
   overflow: hidden;
