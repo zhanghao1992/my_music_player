@@ -1,4 +1,3 @@
-console.log('test')
 /*
  # 按照宽高比例设定html字体, width=device-width initial-scale=1版
  # @pargam win 窗口window对象
@@ -59,6 +58,6 @@ console.log('test')
   designWidth: 640,
   designFontSize: 20,
   callback: function (argument) {
-    console.log('test')
+    // console.log('test')
   }
 })

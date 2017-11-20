@@ -1,20 +1,69 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Recommend from '@/components/Recommend/Recommend'
-import Disc from '@/components/Disc/Disc'
-import Singer from '@/components/Singer/Singer'
-import SingerDeatil from '@/components/singer-deatil/singer-deatil'
-import Rank from '@/components/Rank/Rank'
-import RankDetail from '@/components/Rank-detail/Rank-detail'
-import Search from '@/components/Search/Search'
-import NotFoundComponent from '@/components/NotFoundComponent/NotFoundComponent'
 
 Vue.use(Router)
+const Demo = (resolve) => {
+  import('@/components/Demo/Demo').then((module) => {
+    resolve(module)
+  })
+}
+
+const Recommend = (resolve) => {
+  import('@/components/Recommend/Recommend').then((module) => {
+    resolve(module)
+  })
+}
+
+const Disc = (resolve) => {
+  import('@/components/Disc/Disc').then((module) => {
+    resolve(module)
+  })
+}
+
+const Singer = (resolve) => {
+  import('@/components/Singer/Singer').then((module) => {
+    resolve(module)
+  })
+}
+
+const SingerDeatil = (resolve) => {
+  import('@/components/Singer/Singer').then((module) => {
+    resolve(module)
+  })
+}
+
+const Rank = (resolve) => {
+  import('@/components/Rank/Rank').then((module) => {
+    resolve(module)
+  })
+}
+
+const RankDetail = (resolve) => {
+  import('@/components/Rank-detail/Rank-detail').then((module) => {
+    resolve(module)
+  })
+}
+
+const Search = (resolve) => {
+  import('@/components/Search/Search').then((module) => {
+    resolve(module)
+  })
+}
+
+const NotFoundComponent = (resolve) => {
+  import('@/components/NotFoundComponent/NotFoundComponent').then((module) => {
+    resolve(module)
+  })
+}
 
 export default new Router({
   mode: 'history',
   routes: [
     {path: '*', component: NotFoundComponent},
+    {
+      path: '/demo',
+      component: Demo
+    },
     {
       path: '/',
       redirect: '/recommend'

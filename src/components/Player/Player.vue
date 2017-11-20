@@ -105,10 +105,12 @@ export default {
       if (newSong.id === oldSong.id) {
         return
       }
-      if (this.lyric) {
-        this.lyric.stop()
-      }
-      setTimeout(() => {
+//      if (this.lyric) {
+//        this.lyric.stop()
+//      }
+//      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        alert('0')
         this.$refs.audio.play()
         this._getLyric()
       }, 1000)
@@ -161,6 +163,7 @@ export default {
       }
       if (this.playList.length === 1) {
         this.loopSong()
+        return
       } else {
         let index = this.currentIndex
         if (index >= this.playList.length) {
@@ -181,6 +184,7 @@ export default {
       }
       if (this.playList.length === 1) {
         this.loopSong()
+        return
       } else {
         let index = this.currentIndex
         if (index <= 0) {
@@ -198,10 +202,6 @@ export default {
     ready (e) {
       this.songReady = true
       this.duration = Math.floor(e.target.duration)
-//      setTimeout(() => {
-//        this.$refs.audio.play()
-//        this._getLyric()
-//      }, 1000)
     },
     error () {
       this.songReady = true
@@ -213,6 +213,7 @@ export default {
     end () {
       if (this.mode === 1) {
         this.loopSong()
+        return
       } else {
         this.nextSong()
       }
@@ -220,8 +221,6 @@ export default {
     changePlayMode () {
       this.setPlayMode((this.mode + 1) % 3)
       let playList = this.sequenceList
-//      console.log(this.playList)
-//      console.log(this.sequenceList)
       if (this.mode === 0) {
         this.$vux.toast.text('顺序播放')
       } else if (this.mode === 0) {
@@ -268,10 +267,12 @@ export default {
         needNewCode: 0
       }).then(jsonp => {
         if (jsonp.code === 0) {
+//          if (this.currentSong.lyric !== jsonp.lyric) {
+//            return
+//          }
           this.lyric = new LyricParser(Base64.decode(jsonp.lyric), this.handleLyric)
           if (this.playing) {
             this.lyric.play()
-//            console.log(this.lyric)
           }
         }
       }).catch(err => {
@@ -288,7 +289,7 @@ export default {
       } else {
         this.$refs.lyric.scrollTo(0, 0, 1000)
       }
-      console.log(lineNum)
+//      console.log(lineNum)
     },
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',

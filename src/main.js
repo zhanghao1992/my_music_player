@@ -24,6 +24,7 @@ Vue.use(VueLazyLoad, {
 })
 
 import { ToastPlugin } from 'vux'
+
 Vue.use(ToastPlugin)
 
 /* eslint-disable no-new */
